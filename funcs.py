@@ -340,7 +340,14 @@ def masked_vert(data,mask):
 
 class HCP_subject():
     
-    # Requires an analysis base initialised on a subject.
+    
+    """ HCP_subject
+    Class for interacting with and loading the HCP data.
+    Requires a cfhcpy analysis base initialised on a subject.
+
+    """
+    
+    
     def __init__(self,ab):
         
         # Copy all of the analysis base
@@ -369,19 +376,32 @@ class HCP_subject():
         self.ab.preferred_movie_path=self.vidprefix
         
     def get_data_path(self,run):
-        # Returns a subject datafile for a given run.
+        
+        """ get_data_path
+            Returns data file given a run.
+        """
+        
         wildcard = os.path.join(self.ab.subject_base_dir,self.ab.experiment_dict['data_file_wildcard'].format(experiment_id=self.ab.experiment_dict['wc_exp'],run=self.ab.experiment_dict['runs'][run]))
         dpath=glob.glob(wildcard)[0]
         return dpath
 
     def get_data_paths(self):
-        # Returns all of the subject datafiles.
+        
+         """get_data_paths
+            Returns all data files.
+        """
+            
         dpaths=[]
         for run in range(len(self.ab.experiment_dict['runs'])):
             dpaths.append(self.get_data_path(run))
         self.dpaths=dpaths
         
     def get_dm_paths(self):
+        
+        """get_data_paths
+            Returns the paths for the wav files for producing the spectrograms.
+        """
+        
         # Gets the wav files for the movies.
         wvs = sorted(glob.glob(os.path.join(self.ab.experiment_base_dir,self.ab.preferred_movie_path, '*.wav')))
         self.wvs=wvs
@@ -389,11 +409,20 @@ class HCP_subject():
         
     def prep_data(self):
         
-        # Gets all the paths, splits the data files etc.
+        """prep_data
+            Returns all paths.
+        """
+        
+        
         self.get_data_paths()
         self.get_dm_paths()
     
     def read_run_data(self,dat,dtype):
+        
+        """read_run_data
+            Loads in the cifti data.
+        """
+        
         
         l,r=load_and_split_surf(dat)
         data=np.hstack([l,r])
@@ -412,7 +441,10 @@ class HCP_subject():
 
     
     def read_all_data(self,dtype):
-        # Reads all the run data into a list.
+        
+        """read_all_data
+            Loads in all the cifti data and concatenates it into a list.
+        """
         
         print('Reading in data')
         concat_data=[]
@@ -422,7 +454,11 @@ class HCP_subject():
         
         
     def read_into_dm(self,wavs,run,dtype,normalise,filt,zaxis,nperseg=1024):
-        #Creates a design matrix from the .wav file.
+        
+        """read_into_dm
+            Reads in a wavfile and produces the normalized spectrogram for the prf design matrix.
+        """
+        
         
         sample_rate,samples=wavfile.read(wavs[run]) # Load the wav file
         nTRs=self.ab.experiment_dict['run_durations'][run]
@@ -456,7 +492,10 @@ class HCP_subject():
     
     
     def read_all_dms(self,dtype,zscore,filt,zaxis):
-        # Reads in all the .wav generated dms
+        
+        """read_all_dms
+            Reads all wav files for all runs and transforms them into the spectrograms.
+        """
         
         print('Creating design matrices')
         concat_dms=[]
@@ -471,7 +510,10 @@ class HCP_subject():
         
         
     def make_trainfolds(self):
-        #Makes the train and test folds
+        
+        """make_trainfolds
+            Organises the data and design matrices into leave one run out training and test folds.
+        """
         
         print('making training and test folds')
         data_train,dm_train=[],[]
@@ -495,7 +537,10 @@ class HCP_subject():
         
         
     def import_data(self,dtype,zscore=True,filt=True,zaxis=1):
-        # Imports everything. 
+        
+        """import_data
+            Reads all data and produces all design matrices.
+        """
         self.read_all_data(dtype)
         self.read_all_dms(dtype,zscore,filt,zaxis)
         self.make_trainfolds()
