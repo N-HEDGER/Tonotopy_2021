@@ -9,11 +9,11 @@ https://www.biorxiv.org/content/10.1101/2021.07.05.447566v1.full
 1. This repository does not re-invent the wheel, making use of existing routines where possible. It leverages the routines implemented in *prfpy* for model fitting. prfpy is a package dedicated to fitting prf models: https://github.com/VU-Cog-Sci/prfpy . 
 
 2. *base.py* includes a HCP_subject class that handles data imports and prepares a subject's data for analysis.
-3. *analysis.py* includes an Analysis class that performs the analysis, given a HCP_subject class.
+3. *analysis.py* includes an Analysis class that performs the analysis, given a HCP_subject class and outputs the outcomes.
 4. *aggregate.py* includes various functions for aggregating outcomes across subjects.
 5. *vis.py* includes functions and classes for plotting flatmaps.
 6. *utils.py* includes various utilities.
-7. The *config.yml* sets the paths and parameters for analysis and plotting. Almost nothing is hard-coded, therefore changing the parameters in this file should suffice to alter the analysis.
+7. The *config.yml* sets the paths and parameters for analysis and plotting. Almost nothing is hard-coded, therefore changing in this file should suffice to alter the analysis.
 
 ### Notebooks
 
