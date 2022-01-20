@@ -6,17 +6,20 @@ https://www.biorxiv.org/content/10.1101/2021.07.05.447566v1.full
 
 ### Information:
 
-1. This repository does not re-invent the wheel, making use of existing routines where possible. It leverages the routines implemented in *prfpy* for model fitting. Prfpy is a package dedicated to fitting prf models: https://github.com/VU-Cog-Sci/prfpy 
-2. Moreover it also leverages an existing package for interacting with the HCP data: https://github.com/tknapen/hcp_movie/tree/master/cfhcpy . This package was used to support the 2021 PNAS publication *Topographic connectivity reveals task-dependent retinotopic processing throughout the human brain*. The *analysisbase* class that is used to interface with the HCP data is modified to create a *HCP_subject* class that handles all the data imports. 
-3. Various functions, including the HCP_subject class are defined in funcs.py 
-4. Different stages of analysis are carried out by different notebooks, as detailed below:
+1. This repository does not re-invent the wheel, making use of existing routines where possible. It leverages the routines implemented in *prfpy* for model fitting. prfpy is a package dedicated to fitting prf models: https://github.com/VU-Cog-Sci/prfpy . 
+
+2. *base.py* includes a HCP_subject class that handles data imports and prepares a subject's data for analysis.
+3. *analysis.py* includes an Analysis class that performs the analysis, given a HCP_subject class.
+4. *aggregate.py* includes various functions for aggregating outcomes across subjects.
+5. *vis.py* includes functions and classes for plotting flatmaps.
+6. *utils.py* includes various utilities.
+7. The *config.yml* sets the paths and parameters for analysis and plotting. Almost nothing is hard-coded, therefore changing the parameters in this file should suffice to alter the analysis.
 
 ### Notebooks
 
-1. *Average_subs*: Creates the two across-subject folds reported in the paper.
-2. *Fit_prfs* : Performs the prf fitting for each subject.
-3. *Null_model*: Performs the model fitting for the 'sound on' null model reported in the methods and Supplementary Material.
-4. *Speech_model*: Performs the fitting for the speech-selective model reported in the paper. 
+1. *Average_subs*: Creates the two across-subject folds reported in the paper and saves them out.
+2. *Fit_prfs* : Performs the model fitting. 
+3. *Data handling*: Creates the final model outputs and plots the outcomes. These are returned in the *Figures* folder
 
 ### Model outputs.
 

@@ -1,0 +1,381 @@
+paths:
+    out_base: '/tank/hedger/DATA/TONOTOPY' # Path for outputs
+    csv_wildcard: '{Subject}_Auditory_prf.csv' # Wildcard for CSV outputs
+    long_csv_wildcard: '{Subject}_Auditory_prf_long.csv' 
+    webGL_wildcard: '{Subject}_Auditory_prf_webGL' # Wildcard for webGL outputs
+    info_path: '/tank/shared/2020/hcp_movie/sessionSummaryCSV_7T' #Path to HCP session info csvs
+    agg_subs: ['subsplit_1','subsplit_2','late','early'] # Names of aggregate subjects.
+    agg_path: '/tank/hedger/DATA/HCP_temp' # Places to put the aggregate subjects.
+    late_mov_path: 'movies/Post_20140821_version/' # Path for late movie
+    early_mov_path: 'movies/Pre_20140821_version/' # Path for early movie
+    captionpath: '/tank/hedger/DATA/HCP_temp/Resources/captions' # Path for movie captions.
+    
+
+surfinfo:
+    surf_params: ['thickness','sulcaldepth','curvature','myelin'] # Surface params to read in
+    pcx_dir: '/tank/shared/timeless/pycortex_subjects' # Pycortex directories for hcp subjects
+    av_dir: '/scratch/2019/visual/hcp_comparisons/figures/cortical_surfaces/anatomy' # Path to averaged surface params
+    nverts: 118584
+    surfinfo_wildcard: 'hcp_{sub}/surface-info/{param}.npz' #Wildcard for surface info files.
+
+# Preprocessing parameters.
+preproc:
+    dtype: 'main' 
+    standardise: True
+    zaxis: 1
+    filt: False
+    nperseg: 1024
+
+# prf fitting parameters.
+auditory_prf:
+    TR: 1
+    mu_min: 4.477336814478207
+    mu_max: 8.987196820661973
+    mu_steps: 50
+    sigma_min: .02
+    sigma_max: 4
+    sigma_steps: 20
+    exp_min: 0.01
+    exp_max: 2
+    exp_const: 0.3
+    constrain_n: False
+    fit_hrf: False
+    filter_predictions: True
+    normalise_RFs: False
+    func: 'cart'
+    log: 'natural'
+    filter_type: 'sg'
+    njobs: 60
+    n_batches: 100
+    speech_fit_columns: ['sp_R2','sp_xval_R2','sp_beta_diff']
+    fit_columns: ['mu','sigma','beta','baseline','n','R2']
+    vars2av: ['R2','xval_R2','null','sp_R2','sp_xval_R2','sp_beta_diff']
+    vars2wav: ['mu','sigma','n']
+    fparams:
+      window_length: 201
+      polyorder: 3
+
+# Parameters related to aggregating data.
+agg:
+    invalid_subjects: ['late','early','.ipynb_checkpoints','subsplit_1','subsplit_2']
+    nverts: 118584
+    nfolds: 4
+    av_subs: ['late','early']
+    foldsplit_wildcard: 'foldsplit_{comb}.csv'
+    vars2wavagg: ['mu','sigma','n','fwhm','sp_beta_diff']
+    vars2wavaggfold: ['mu','sigma','n']
+    vars2avagg: ['R2','xval_R2','null']
+    bot_wildcard: 'bot_{participant}.csv'
+    mid_wildcard: 'mid_{participant}.csv'
+    top_wildcard: 'top_{participant}.csv'
+    csv_wildcard: '{subno}/{subno}_Auditory_prf.csv'
+    long_csv_wildcard: '{subno}/{subno}_Auditory_prf_long.csv'
+
+# Parameters related to creating flatmaps
+img_visualization:
+    x: 6
+    y: 3
+    dpi: 300
+    zoom_rectL: [-210.33542, -130.50809, -110.665405, 2]
+    zoom_rectR: [160.3187, 230.97235, -120.665405, -20]
+    vars2plot: ['mu','fwhm','n','xval_R2','R2','myelin','curvature','thickness','sulcaldepth']
+    labels: ['\u03BC (kHz)','FWHM (kHz)','n','Xval R\u00B2','R\u00B2','Myelin Density (T1/T2)','Mean Curvature','Cortical Thickness (mm)','Sulcal Depth (mm)','Octaves']
+    ranges: [[100,3000],[0,8500],[0.1,0.4],[0,0.4],[0,0.4],[1.2,1.9],[-0.4,0.4],[2.5,3.3],[-1.8,1.8]]
+    rranges: [[0.1,3],[0,8.5],[0.1,0.4],[0,0.4],[0,0.4],[1.2,1.9],[-0.4,0.4],[2.5,3.3],[-1.8,1.8]]
+    cmaps: ['nipy_spectral','viridis','mako','plasma',"plasma","plasma","GreenWhiteRed","cubehelix","BrBG",'cividis']
+    alpha: [False,False,False,False,False,False,False,False,False]
+    zoom: [True,True,True,True,True,True,True,True,True]
+    zoomplot_wildcard: '{subject}_{hem}_{param}'
+    plot_wildcard: '{subject}_{param}'
+    pycortex_subject: 'hcp_999999'
+    with_colorbar: False
+    with_curvature: True
+    with_rois: False
+    with_labels: False
+    alphavar: 'xval_R2'
+    vmin2: 0
+    vars2plotagg: ['mu','fwhm','n','sp_beta_diff']
+    cmapsagg: ['nipy_spectral','viridis','mako','spectral']
+    rangesagg: [[100,3000],[0,8500],[0.1,0.4],[-1.5,1.5]]
+    vmax2: [.4,.4,.4,.4]
+
+    
+    
+systems:
+  aeneas:
+    identifier: "aeneas" # this string has to be a unique identifier in os.uname()
+    base_dir: "/tank/shared/2020/hcp_{experiment}/"
+    code_dir: "/home/knapen/projects/hcp_movie/"
+    threads: 16
+  cartesius:
+    identifier: "bullx"
+    base_dir: "/tank/shared/2020/hcp_{experiment}/"
+    code_dir: "/home/knapen/projects/hcp_movie/"
+    threads: 23
+  romulus:
+    identifier: "node230"
+    base_dir: "/tank/shared/2020/hcp_{experiment}/"
+    code_dir: "/tank/hedger/scripts/HCP_tonotopy"
+    threads: 40
+  lisa:
+    identifier: "lisa"
+    base_dir: "/tank/shared/2020/hcp_{experiment}/"
+    code_dir: "/home/knapen/projects/hcp_movie/"
+    threads: 16
+
+experiments:
+  movie:
+    wc_exp: "MOVIE"
+    runs: [1, 2, 3, 4]
+    test_duration: 103
+    run_durations: [921, 918, 915, 901]
+    data_file_wildcard: "tfMRI_{experiment_id}{run}_*_Atlas_1.6mm_MSMAll_hp2000_clean.dtseries_sg_psc.nii"
+  rs:
+    wc_exp: "REST"
+    runs: [1, 2, 3, 4]
+    test_duration: 0
+    run_durations: [900, 900, 900, 900]
+    data_file_wildcard: "rfMRI_{experiment_id}{run}_*_Atlas_1.6mm_MSMAll_hp2000_clean.dtseries_sg_psc.nii"
+  ret:
+    wc_exp: "RET"
+    runs: ["BAR1", "BAR2", "CON", "EXP", "CW", "CCW"]
+    test_duration: 0
+    run_durations: [300, 300, 300, 300, 300, 300]
+    data_file_wildcard: "tfMRI_{experiment_id}{run}_*_Atlas_1.6mm_MSMAll_hp2000_clean.dtseries_sg_psc.nii"
+
+analysis:
+  average_subject: "999999"
+  full_data_subjects:
+    [
+      100610,
+      125525,
+      132118,
+      145834,
+      155938,
+      164131,
+      169444,
+      177140,
+      181232,
+      191336,
+      197348,
+      203418,
+      221319,
+      263436,
+      360030,
+      395756,
+      463040,
+      572045,
+      644246,
+      725751,
+      782561,
+      833249,
+      898176,
+      927359,
+      995174,
+      102311,
+      111514,
+      126426,
+      134627,
+      146129,
+      156334,
+      164636,
+      169747,
+      177645,
+      182436,
+      191841,
+      198653,
+      204521,
+      233326,
+      283543,
+      365343,
+      397760,
+      467351,
+      573249,
+      654552,
+      732243,
+      783462,
+      859671,
+      899885,
+      942658,
+      102816,
+      114823,
+      128935,
+      134829,
+      146432,
+      157336,
+      165436,
+      171633,
+      177746,
+      182739,
+      192439,
+      199655,
+      205220,
+      239136,
+      318637,
+      380036,
+      401422,
+      525541,
+      581450,
+      671855,
+      751550,
+      789373,
+      861456,
+      901139,
+      943862,
+      104416,
+      115017,
+      130114,
+      135124,
+      146735,
+      158035,
+      167036,
+      172130,
+      178142,
+      185442,
+      192641,
+      200210,
+      209228,
+      246133,
+      320826,
+      381038,
+      406836,
+      541943,
+      601127,
+      680957,
+      757764,
+      814649,
+      871762,
+      901442,
+      105923,
+      115825,
+      130518,
+      137128,
+      146937,
+      158136,
+      167440,
+      173334,
+      178243,
+      186949,
+      193845,
+      200311,
+      212419,
+      249947,
+      330324,
+      385046,
+      412528,
+      547046,
+      617748,
+      690152,
+      765864,
+      818859,
+      872764,
+      905147,
+      958976,
+      108323,
+      116726,
+      131217,
+      140117,
+      148133,
+      159239,
+      169040,
+      175237,
+      178647,
+      187345,
+      195041,
+      200614,
+      214019,
+      251833,
+      346137,
+      389357,
+      429040,
+      550439,
+      627549,
+      706040,
+      770352,
+      825048,
+      878776,
+      910241,
+      966975,
+      109123,
+      118225,
+      131722,
+      144226,
+      150423,
+      162935,
+      169343,
+      176542,
+      180533,
+      191033,
+      196144,
+      201515,
+      214524,
+      257845,
+      352738,
+      393247,
+      436845,
+      562345,
+      638049,
+      724446,
+      771354,
+      826353,
+      878877,
+      926862,
+      971160,
+    ]
+  partial_data_subjects: [111312, 951457]
+  sg_filter_window_length: 201
+  sg_filter_polyorder: 3
+  TR: 1.0
+  size_grid: [0.5, 1, 2, 3, 4, 5, 7, 10, 15, 20, 30, 40, 80]
+  batchsize_grayordinates: 170494
+  batchsize_vertex_size: 8000 # -1 is all at once, 15101 is in two parts if size_grid has 13 members
+  workbench_split_command: >
+    wb_command -cifti-separate {cii}
+    COLUMN -volume-all {cii_n}_subvol.nii.gz
+    -metric CORTEX_LEFT {cii_n}_L.gii
+    -metric CORTEX_RIGHT {cii_n}_R.gii
+  workbench_resample_command: >
+    wb_command -metric-resample
+    {metric_in} {current_sphere} {new_sphere}
+    ADAP_BARY_AREA {metric_out} -area-metrics {current_area} {new_area}
+  workbench_current_sphere: "surfaces/resample_fsaverage/fs_LR-deformed_to-fsaverage.{hemi}.sphere.59k_fs_LR.surf.gii"
+  workbench_new_sphere: "surfaces/resample_fsaverage/fsaverage_std_sphere.{hemi}.164k_fsavg_{hemi}.surf.gii"
+  workbench_current_area: "surfaces/resample_fsaverage/fs_LR.{hemi}.midthickness_va_avg.59k_fs_LR.shape.gii"
+  workbench_new_area: "surfaces/resample_fsaverage/fsaverage.{hemi}.midthickness_va_avg.164k_fsavg_{hemi}.shape.gii"
+  atlas_label_filename: "Q1-Q6_RelatedParcellation210.CorticalAreas_dil_Colors.59k_fs_LR.dlabel.{hemi}.gii"
+  brainmodel_cifti_file: "999999/tfMRI_RETEXP_7T_AP_Atlas_1.6mm_MSMAll_hp2000_clean.dtseries_sg_psc.nii"
+  cii_filename_wildcard: "*fMRI_*_7T_*_Atlas_1.6mm_MSMAll_hp2000_clean.dtseries_sg_psc.nii"
+  
+
+r: 
+    base_dir: '/tank/hedger/DATA/TONOTOPY'
+    cmapdircsv: '/tank/hedger/DATA/Monkey/cmaps/'
+    cmapdircx: '/tank/hedger/software/anaconda3/envs/p3/share/pycortex/colormaps/'
+    bsize: 12
+    analysis_name: 'Test'
+    csv_wildcard: '%s_Auditory_prf.csv'
+    long_csv_wildcard: '%s_Auditory_prf.csv'
+    average_wildcard: '%s_average.csv'
+    misc_wildcard: '%s.csv'
+    ROIframe: '/tank/hedger/DATA/TONOTOPY/Test/ROIS/ROIS.csv'
+    cbbPalette: ["#000000", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7","#322388",'#f6feae','#074050']
+    ROIS_split: ["A1","R","RT","MBelt","LBelt",'P1','P2']
+    ROIS_crude: ["Core","Non-core"]
+    ROIS_hcp: ['A1','LBelt','MBelt','PBelt','RI','A4','A5','TA2','STGa','STSdp','STSda']
+    pref_ROIdef: 'ROI_split_fac'
+    viridis_option: 'viridis'
+    nsamples: 10000
+    numCores: 80
+    textang: 75
+    vjust: 0.8
+    hjust: 1
+    vars2cor: ['mu','fwhm','n']
+    psize: 2
+    cbar_ymax: .25
+    dpi: 300
+    fig_width: 210
+    cbar_rel: 0.3
+    cbar_x: 40
+    cbar_y: 40 
+    fig_units: 'mm'
+    misc_path: '/tank/hedger/DATA/TONOTOPY/Test/misc'
